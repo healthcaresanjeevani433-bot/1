@@ -7,7 +7,7 @@ services:
   - type: web
     name: hms_app
     env: python
-    buildCommand: "./build.sh"
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn myproject.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
