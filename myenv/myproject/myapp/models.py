@@ -183,13 +183,24 @@ class OPDAppointment(models.Model):
     )
 
     def __str__(self):
-        return f"OPD - {self.patient.name} with {self.doctor.name}"
+        doctor_name = self.doctor.name if self.doctor else "Unknown Doctor"
+        return f"OPD - {self.patient.name} with {doctor_name}"
 
 class Bed(models.Model):
     WARD_CHOICES = (
-        ('General', 'General'),
-        ('ICU', 'ICU'),
-        ('Private', 'Private'),
+        ('General', 'General Ward Bed'),
+        ('SemiPrivate', 'Semi-Private Bed'),
+        ('Private', 'Private Room Bed'),
+        ('Deluxe', 'Deluxe / Suite Bed'),
+        ('ICU', 'ICU Bed'),
+        ('CCU', 'CCU Bed'),
+        ('NICU', 'NICU Bed'),
+        ('PICU', 'PICU Bed'),
+        ('HDU', 'HDU Bed'),
+        ('Emergency', 'Emergency Bed'),
+        ('Recovery', 'Recovery Bed'),
+        ('PostOp', 'Post-Op Bed'),
+        ('Orthopedic', 'Orthopedic Bed'),
     )
     STATUS_CHOICES = (
         ('Available', 'Available'),

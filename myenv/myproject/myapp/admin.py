@@ -26,14 +26,14 @@ class AdminModelAdmin(admin.ModelAdmin):
 # Doctor Model
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ('doctor_id', 'name', 'specialization', 'department', 'phone', 'availability_status', 'created_at')
+    list_display = ('doctor_id', 'first_name', 'last_name', 'specialization', 'department', 'phone', 'availability_status', 'created_at')
     list_filter = ('specialization', 'department', 'availability_status', 'is_first_login', 'created_at')
-    search_fields = ('doctor_id', 'name', 'email', 'phone')
+    search_fields = ('doctor_id', 'first_name', 'last_name', 'email', 'phone')
     readonly_fields = ('doctor_id', 'created_at')
     
     fieldsets = (
         ('Doctor Information', {
-            'fields': ('doctor_id', 'name', 'department', 'specialization', 'availability_status')
+            'fields': ('doctor_id', 'first_name', 'last_name', 'department', 'specialization', 'availability_status')
         }),
         ('Contact Details', {
             'fields': ('phone', 'email')

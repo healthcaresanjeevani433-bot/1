@@ -1431,7 +1431,8 @@ def receptionist_ipd_admit(request):
     return render(request, "myapp/staff/receptionist/ipd_admission.html", {
         'patients': patients, 
         'doctors': doctors,
-        'beds': beds
+        'beds': beds,
+        'ward_types': Bed.WARD_CHOICES
     })
 
 @login_required
@@ -1466,6 +1467,32 @@ def receptionist_discharge(request, id):
         return redirect('receptionist_ipd_list')
         
     return render(request, "myapp/staff/receptionist/discharge_request.html", {'admission': admission})
+
+@login_required
+def receptionist_finalize_discharge(request, id):
+    if request.user.user_type != 'staff' or request.user.staff_profile.role != 'Receptionist':
+        return redirect('login')
+    
+    admission = get_object_or_404(IPDAdmission, id=id)
+    
+    if request.method == 'POST':
+        # 1. Update Admission Status
+        admission.status = 'Discharged'
+        # Check if discharge_date already set? If not use now.
+        if not admission.discharge_date:
+             admission.discharge_date = timezone.now()
+        admission.save()
+        
+        # 2. Free the Bed
+        if admission.bed:
+            admission.bed.status = 'Available'
+            admission.bed.save()
+            
+        messages.success(request, f'Patient {admission.patient.name} discharged successfully.')
+        return redirect('receptionist_ipd_list')
+        
+    # Confirmation Page (optional, but good practice)
+    return render(request, "myapp/staff/receptionist/discharge_finalize.html", {'admission': admission})
 
 @login_required
 def receptionist_book_appt(request):
@@ -2404,7 +2431,16 @@ def doctor_prescriptions(request):
         return redirect('doctor_prescriptions')
 
     patients = Patient.objects.all() # For dropdown
+    patients = Patient.objects.all() # For dropdown
     return render(request, 'myapp/doctor/prescriptions.html', {'prescriptions': prescriptions, 'doctor': doctor, 'patients': patients})
+
+@login_required
+def prescription_print(request, id):
+    if request.user.user_type != 'doctor':
+        return redirect('login')
+    
+    prescription = get_object_or_404(Prescription, id=id)
+    return render(request, 'myapp/doctor/print_prescription.html', {'p': prescription})
 
 @login_required
 def doctor_lab_reports(request):
@@ -2467,6 +2503,14 @@ def doctor_discharge_summary(request):
         return redirect('doctor_discharge_summary')
         
     return render(request, 'myapp/doctor/discharge_summary.html', {'summaries': summaries, 'admitted_patients': admitted_patients, 'doctor': doctor})
+
+@login_required
+def discharge_print(request, id):
+    if request.user.user_type != 'doctor':
+        return redirect('login')
+    
+    summary = get_object_or_404(DischargeSummary, id=id)
+    return render(request, 'myapp/doctor/print_discharge.html', {'s': summary})
 
 
 
@@ -2684,3 +2728,137 @@ def chat_api(request):
             
     return JsonResponse({'status': 'error', 'message': 'Invalid Method'}, status=400)
 
+
+# ============ BED MANAGEMENT VIEWS ============
+
+@login_required
+def bed_list(request):
+    """List all beds (common for Admin and Receptionist)"""
+    if request.user.user_type == 'admin':
+        base_template = 'myapp/admin/base.html'
+    elif request.user.user_type == 'staff' and request.user.staff_profile.role == 'Receptionist':
+        base_template = 'myapp/staff/staff_base.html'
+    else:
+        return redirect('login')
+    
+    # Filtering
+    ward_type = request.GET.get('ward_type')
+    status = request.GET.get('status')
+    
+    beds = Bed.objects.all().order_by('ward_type', 'bed_number')
+    
+    if ward_type:
+        beds = beds.filter(ward_type=ward_type)
+    if status:
+        beds = beds.filter(status=status)
+
+    return render(request, "myapp/beds/bed_list.html", {
+        'beds': beds,
+        'base_template': base_template,
+        'ward_types': Bed.WARD_CHOICES,
+        'status_choices': Bed.STATUS_CHOICES,
+        'selected_ward': ward_type,
+        'selected_status': status
+    })
+
+@login_required
+def bed_add(request):
+    """Add new bed"""
+    if request.user.user_type == 'admin':
+        base_template = 'myapp/admin/base.html'
+        redirect_url = 'bed_list'
+    elif request.user.user_type == 'staff' and request.user.staff_profile.role == 'Receptionist':
+        base_template = 'myapp/staff/staff_base.html'
+        redirect_url = 'bed_list'
+    else:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        ward_type = request.POST.get('ward_type')
+        bed_number = request.POST.get('bed_number')
+        daily_charge = request.POST.get('daily_charge')
+        status = request.POST.get('status')
+        
+        if Bed.objects.filter(bed_number=bed_number).exists():
+             return render(request, "myapp/beds/bed_form.html", {
+                'error': f'Bed number {bed_number} already exists.',
+                'base_template': base_template
+            })
+        
+        try:
+            Bed.objects.create(
+                ward_type=ward_type,
+                bed_number=bed_number,
+                daily_charge=daily_charge,
+                status=status
+            )
+            messages.success(request, f'Bed {bed_number} added successfully!')
+            return redirect(redirect_url)
+        except Exception as e:
+            return render(request, "myapp/beds/bed_form.html", {
+                'error': f'Error adding bed: {str(e)}',
+                'base_template': base_template
+            })
+            
+    return render(request, "myapp/beds/bed_form.html", {'base_template': base_template})
+
+@login_required
+def bed_edit(request, id):
+    """Edit bed details"""
+    if request.user.user_type == 'admin':
+        base_template = 'myapp/admin/base.html'
+        redirect_url = 'bed_list'
+    elif request.user.user_type == 'staff' and request.user.staff_profile.role == 'Receptionist':
+        base_template = 'myapp/staff/staff_base.html'
+        redirect_url = 'bed_list'
+    else:
+        return redirect('login')
+    
+    bed = get_object_or_404(Bed, id=id)
+    
+    if request.method == 'POST':
+        bed.ward_type = request.POST.get('ward_type')
+        bed.bed_number = request.POST.get('bed_number')
+        bed.daily_charge = request.POST.get('daily_charge')
+        bed.status = request.POST.get('status')
+        
+        try:
+            bed.save()
+            messages.success(request, f'Bed {bed.bed_number} updated successfully!')
+            return redirect(redirect_url)
+        except Exception as e:
+             return render(request, "myapp/beds/bed_form.html", {
+                'bed': bed,
+                'error': f'Error updating bed: {str(e)}',
+                'base_template': base_template
+            })
+    
+    return render(request, "myapp/beds/bed_form.html", {
+        'bed': bed,
+        'base_template': base_template
+    })
+
+@login_required
+def bed_delete(request, id):
+    """Delete bed"""
+    if request.user.user_type == 'admin':
+        base_template = 'myapp/admin/base.html'
+        redirect_url = 'bed_list'
+    elif request.user.user_type == 'staff' and request.user.staff_profile.role == 'Receptionist':
+        base_template = 'myapp/staff/staff_base.html'
+        redirect_url = 'bed_list'
+    else:
+        return redirect('login')
+    
+    bed = get_object_or_404(Bed, id=id)
+    
+    if request.method == 'POST':
+        bed_number = bed.bed_number
+        bed.delete()
+        messages.success(request, f'Bed {bed_number} deleted successfully!')
+        return redirect(redirect_url)
+    
+    return render(request, "myapp/beds/bed_delete.html", {
+        'bed': bed,
+        'base_template': base_template
+    })

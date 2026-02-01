@@ -32,14 +32,35 @@
 
         /* Sidebar Styling */
         #sidebar-wrapper {
-            min-height: 100vh;
+            height: 100vh;
             width: var(--sidebar-width);
             margin-left: 0;
             transition: margin 0.25s ease-out;
             background: white;
             position: fixed;
+            top: 0;
+            left: 0;
             z-index: 1000;
             box-shadow: 4px 0 24px 0 rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar for Sidebar */
+        #sidebar-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #sidebar-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #sidebar-wrapper::-webkit-scrollbar-thumb {
+            background-color: rgba(99, 102, 241, 0.2);
+            border-radius: 20px;
+        }
+
+        #sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(99, 102, 241, 0.5);
         }
 
         #sidebar-wrapper .sidebar-heading {
@@ -229,6 +250,15 @@
                 </a>
 
                 <div class="mt-4 px-3 mb-2 text-muted uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">
+                    ADMINISTRATION
+                </div>
+
+                <a href="{% url 'department_list' %}"
+                    class="list-group-item list-group-item-action {% if 'department' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-building me-2"></i>Departments
+                </a>
+
+                <div class="mt-4 px-3 mb-2 text-muted uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">
                     HOSPITAL
                 </div>
 
@@ -260,6 +290,10 @@
                 <a href="{% url 'ipd_list' %}"
                     class="list-group-item list-group-item-action {% if 'ipd' in request.resolver_match.url_name %}active{% endif %}">
                     <i class="fas fa-procedures me-2"></i>IPD
+                </a>
+                <a href="{% url 'bed_list' %}"
+                    class="list-group-item list-group-item-action {% if 'bed' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-bed me-2"></i>Bed Status
                 </a>
                 <a href="{% url 'admin_billing' %}" class="list-group-item list-group-item-action">
                     <i class="fas fa-file-invoice-dollar me-2"></i>Billing

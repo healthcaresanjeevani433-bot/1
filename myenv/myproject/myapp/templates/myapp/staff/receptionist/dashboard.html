@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold text-dark mb-1">Good Morning, {{ request.user.first_name }}</h2>
+        <!-- <h2 class="fw-bold text-dark mb-1">Good Morning, {{ request.user.first_name }}</h2> -->
         <p class="text-muted">Here's your daily hospital overview.</p>
     </div>
     <div>
@@ -139,7 +139,13 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>Dr. {{ appt.doctor.name }}</td>
+                                <td>
+                                    {% if appt.doctor %}
+                                    Dr. {{ appt.doctor.name }}
+                                    {% else %}
+                                    <span class="text-muted">No Doctor Assigned</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ appt.reason }}</td>
                                 <td>
                                     {% if appt.status == 'Completed' %}

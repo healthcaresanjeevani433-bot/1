@@ -107,8 +107,16 @@
     <div style="text-align: center; margin-top: 20px;" class="no-print">
         <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Print
             Slip</button>
-        <a href="{% url 'receptionist_opd_register' %}" style="margin-left: 20px;">New Registration</a>
-        <a href="{% url 'receptionist_dashboard' %}" style="margin-left: 20px;">Back to Dashboard</a>
+        <a href="{% url 'receptionist_opd_register' %}" style="margin-left: 20px; text-decoration: none;">
+            <button
+                style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px;">New
+                Registration</button>
+        </a>
+        <a href="{% url 'receptionist_dashboard' %}" style="margin-left: 20px; text-decoration: none;">
+            <button
+                style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #6c757d; color: white; border: none; border-radius: 5px;">Back
+                to Dashboard</button>
+        </a>
     </div>
 
 </body>

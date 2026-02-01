@@ -35,7 +35,10 @@
                         <td>{{ summary.diagnosis|truncatechars:30 }}</td>
                         <td>{{ summary.treatment_given|truncatechars:30 }}</td>
                         <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-light border"><i class="fas fa-print me-1"></i> Print</button>
+                            <a href="{% url 'discharge_print' summary.id %}" target="_blank"
+                                class="btn btn-sm btn-light border">
+                                <i class="fas fa-print me-1"></i> Print
+                            </a>
                         </td>
                     </tr>
                     {% empty %}

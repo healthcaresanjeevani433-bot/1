@@ -24,8 +24,8 @@
                                 <select class="form-select" id="patient" name="patient" required>
                                     <option value="" selected disabled>Choose patient...</option>
                                     {% for patient in patients %}
-                                    <option value="{{ patient.id }}">{{ patient.patient_id }} - {{ patient.name }} ({{
-                                        patient.phone }})</option>
+                                    <option value="{{ patient.id }}">{{ patient.patient_id }} - {{ patient.name }}
+                                    </option>
                                     {% endfor %}
                                 </select>
                                 <div class="form-text">
@@ -50,11 +50,10 @@
                                 <select class="form-select" id="doctor" name="doctor" required>
                                     <option value="" selected disabled>Select Doctor...</option>
                                     {% for doctor in doctors %}
-                                    <option value="{{ doctor.id }}" data-dept="{{ doctor.department_id|default:'' }}">{{
-                                        doctor.name }} ({{ doctor.specialization }})</option>
-                                    {% empty %}
-                                    <option disabled>No doctors available</option>
+                                    <option value="{{ doctor.id }}" data-dept="{{ doctor.department.id }}">
+                                        {{doctor.name }} ({{ doctor.department.name }})</option>
                                     {% endfor %}
+
                                 </select>
                             </div>
 

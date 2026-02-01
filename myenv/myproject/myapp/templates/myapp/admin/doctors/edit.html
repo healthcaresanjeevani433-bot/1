@@ -51,22 +51,34 @@
                         <div class="col-md-6 mb-3">
                             <label for="department" class="form-label">Department</label>
                             <select class="form-select" id="department" name="department">
-                                <option value="">Select Department</option>
-                                {% for dept in departments %}
-                                <option value="{{ dept.id }}" {% if doctor.department and doctor.department.id==dept.id
-                                    %}selected{% endif %}>{{ dept.name }}</option>
-                                {% endfor %}
+                                    <option value="">Select Department</option>
+
+                                    <option value="1">General Medicine</option>
+                                    <option value="2">General Surgery</option>
+                                    <option value="3">Orthopedics</option>
+                                    <option value="4">Cardiology</option>
+                                    <option value="5">Neurology</option>
+                                    <option value="6">Pulmonology</option>
+                                    <option value="7">Gastroenterology</option>
+                                    <option value="8">Nephrology</option>
+                                    <option value="9">Urology</option>
+                                    <option value="10">Dermatology</option>
+                                    <option value="11">ENT (Ear, Nose, Throat)</option>
+                                    <option value="12">Ophthalmology</option>
+                                    <option value="13">Pediatrics</option>
+                                    <option value="14">Gynecology & Obstetrics</option>
+                                    <option value="15">Psychiatry</option>
+                                    <option value="16">Oncology</option>
                             </select>
+
+                            
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="availability_status" class="form-label">Availability Status</label>
                             <select class="form-select" id="availability_status" name="availability_status">
-                                <option value="Available" {% if doctor.availability_status=='Available' %}selected{%
-                                    endif %}>Available</option>
-                                <option value="On Leave" {% if doctor.availability_status=='On Leave' %}selected{% endif
-                                    %}>On Leave</option>
-                                <option value="Emergency" {% if doctor.availability_status=='Emergency' %}selected{%
-                                    endif %}>Emergency</option>
+                                <option value="Available" >Available</option>
+                                <option value="On Leave" >On Leave</option>
+                                <option value="Emergency" >Emergency</option>
                             </select>
                         </div>
                     </div>

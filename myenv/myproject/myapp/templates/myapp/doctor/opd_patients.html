@@ -26,8 +26,8 @@
                     {% for appt in appointments %}
                     <tr>
                         <td class="ps-4">
-                            <span class="badge bg-light text-dark border border-secondary rounded-pill px-3">{{
-                                appt.token_no|default:"--" }}</span>
+                            <span class="badge bg-light text-dark border border-secondary rounded-pill px-3">
+                                {{ appt.token_no|default:"--" }}</span>
                         </td>
                         <td>
                             <div class="d-flex align-items-center">

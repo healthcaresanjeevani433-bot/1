@@ -45,8 +45,10 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-end pe-4">
-                                    <button class="btn btn-sm btn-light border"><i class="fas fa-print me-1"></i>
-                                        Print</button>
+                                    <a href="{% url 'prescription_print' p.id %}" target="_blank"
+                                        class="btn btn-sm btn-light border">
+                                        <i class="fas fa-print me-1"></i> Print
+                                    </a>
                                 </td>
                             </tr>
                             {% empty %}

@@ -88,6 +88,7 @@ urlpatterns = [
     path('staff/receptionist/ipd/admit/', views.receptionist_ipd_admit, name='receptionist_ipd_admit'),
     path('staff/receptionist/ipd/list/', views.receptionist_ipd_list, name='receptionist_ipd_list'),
     path('staff/receptionist/ipd/discharge/<int:id>/', views.receptionist_discharge, name='receptionist_discharge'),
+    path('staff/receptionist/ipd/discharge/finalize/<int:id>/', views.receptionist_finalize_discharge, name='receptionist_finalize_discharge'),
     
     # Appointments
     path('staff/receptionist/appointment/book/', views.receptionist_book_appt, name='receptionist_book_appt'),
@@ -106,8 +107,10 @@ urlpatterns = [
     path('doctor/ipd-patients/', views.doctor_ipd_patients, name="doctor_ipd_patients"),
     path('doctor/appointments/', views.doctor_appointments, name="doctor_appointments"),
     path('doctor/prescriptions/', views.doctor_prescriptions, name="doctor_prescriptions"),
+    path('doctor/prescription/print/<int:id>/', views.prescription_print, name="prescription_print"),
     path('doctor/lab-reports/', views.doctor_lab_reports, name="doctor_lab_reports"),
     path('doctor/discharge-summary/', views.doctor_discharge_summary, name="doctor_discharge_summary"),
+    path('doctor/discharge/print/<int:id>/', views.discharge_print, name="discharge_print"),
     path('doctor/profile/', views.doctor_profile, name="doctor_profile"),
     
     # Patient URLs
@@ -124,4 +127,10 @@ urlpatterns = [
     # Payment URLs
     path('payment/initiate/', views.initiate_payment, name='initiate_payment'),
     path('payment/success/', views.payment_success, name='payment_success'),
+
+    # Bed Management
+    path('beds/', views.bed_list, name='bed_list'),
+    path('beds/add/', views.bed_add, name='bed_add'),
+    path('beds/edit/<int:id>/', views.bed_edit, name='bed_edit'),
+    path('beds/delete/<int:id>/', views.bed_delete, name='bed_delete'),
 ]
